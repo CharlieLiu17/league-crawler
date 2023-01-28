@@ -2,13 +2,8 @@ league-crawler crawls specifically leagueoflegends.com, and any affiliate Riot G
 
 A virtual environment is recommended to donwnload the necessary packages.
 
-Use "pip install -r requirements.txt" to download the packages needed (make sure pip is up-to-date, as some packages need it to be)!
+Use "pip install -r requirements.txt" to download the packages needed.
 
-Then, run the following in the python interpreter:
-
-  >>> import nltk
-  >>> nltk.download('wordnet')
-  
 Once all packages are installed, navigate to terminal and open to the root directory of this repository (the upper-level tutorial folder)
 
 The spider's code can be found under tutorial/spiders as "leaguespider.py"
