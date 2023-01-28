@@ -6,7 +6,34 @@ from nltk.stem.wordnet import WordNetLemmatizer
 import inflect
 import json
 from collections import deque
+from threading import Thread
+import time
+import csv
 
+class TimerThread(Thread):
+    def __init__(self, url_set):
+        Thread.__init__(self)
+        self.url_set = url_set
+        self.values = []
+    
+    def run(self):
+        start = time.perf_counter()
+        current = time.perf_counter()
+        curr = current - start
+        while (curr < 211):
+            time.sleep(0.5)
+            current = time.perf_counter()
+            curr = current - start
+            self.values.append((curr, len(self.url_set)))
+            print(self.values)
+        with open('stats.csv','w', newline="") as out:
+            csv_out=csv.writer(out)
+            csv_out.writerow(['time','pages looked at'])
+            for row in self.values:
+                csv_out.writerow(row)
+
+
+            
 
 class LeagueSpider(scrapy.Spider):
     name = "league"
@@ -15,7 +42,8 @@ class LeagueSpider(scrapy.Spider):
     def start_requests(self):
         self.crawled_urls = set()
         # print("INDEX " + self.index)
-
+        timer = TimerThread(self.crawled_urls)
+        timer.start()
         urls = [
             'https://www.leagueoflegends.com/en-us/',
         ]
@@ -56,8 +84,8 @@ class LeagueSpider(scrapy.Spider):
         
                     
 
-        print("WORDS " + str(words))
-        print("WORD LIST " + str(word_list))
+        # print("WORDS " + str(words))
+        # print("WORD LIST " + str(word_list))
         
         web_links = soup.select('a')
         
@@ -66,7 +94,7 @@ class LeagueSpider(scrapy.Spider):
 
 
         next_pages = [web_link['href'] for web_link in web_links] 
-        print("LINKS " + str(next_pages))
+        # print("LINKS " + str(next_pages))
         for next_page in next_pages:
             if (next_page is not None):
                 next_page = response.urljoin(next_page)
